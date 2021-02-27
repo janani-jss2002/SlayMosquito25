@@ -30,7 +30,7 @@ void loop()
   }
   else
   {
-  digitalWrite(13,LOW);
+  digitalWrite(13,LOW);//comment
   }
   //code block for intrusion detection ends
   //code block for bluetooth control
