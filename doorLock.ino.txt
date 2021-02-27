@@ -1,0 +1,45 @@
+#include<Servo.h>// the header for servo predefined by arduino
+
+Servo servo;// it defines a servo 
+
+void setup()
+{
+  pinMode(13,OUTPUT);
+  pinMode(7,INPUT);
+  pinMode(12,OUTPUT);
+  servo.attach(8);//the servo will be controlled by pin 8
+  servo.write(0);//sets servo to 0 degree position
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  //code block for intrusion detection begins
+  digitalWrite(12,LOW);
+  delayMicroseconds(2);
+  digitalWrite(12,HIGH);
+  delay(10);
+  digitalWrite(12,LOW);
+
+  int t=pulseIn(7,HIGH);
+  int dis=(t*0.034)/2;
+
+  if(dis>4)
+  {
+  digitalWrite(13,HIGH);
+  }
+  else
+  {
+  digitalWrite(13,LOW);//comment
+  }
+  //code block for intrusion detection ends
+  //code block for bluetooth control
+  if(Serial.available()==1)//checks if any new input is available
+  {
+  String data=Serial.readString();//reading the input that has been communicated
+  if(data=="A")//this signal depends on the app
+  servo.write(90);
+  else if(data=="a")// the turn off signal
+  servo.write(0);
+}
+}
