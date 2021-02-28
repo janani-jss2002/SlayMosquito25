@@ -1,0 +1,21 @@
+int vibpin1 = 8; //declaring the channel for input from first vibration sensor
+int vibpin2 = 7; //declaring the channel for input from second vibration sensor
+int vibpin3 = 4; //declaring the channel for input from third vibration sensor
+int relaypin = 13;//setting the pin for
+
+void setup() {
+  pinMode(vibpin1, INPUT); //setting up the channel for taking input signal
+  pinMode(vibpin2, INPUT); //setting up the channel for taking input signal
+  pinMode(vibpin3, INPUT); //setting up the channel for taking input signal
+  pinMode(relaypin, OUTPUT);//setting up the channel for sending output signal to relay
+}
+
+void loop() {
+  int vibSignal1 = digitalRead(vibpin1);//reads input from 1st vibration sensor
+  int vibSignal2 = digitalRead(vibpin2);//reads input from 2nd vibration sensor
+  int vibSignal3 = digitalRead(vibpin3);//reads input from 3rd vibration sensor
+  if(vibSignal1 == 1 || vibSignal2 == 1 || vibSignal3 == 1)
+    digitalWrite(relaypin, HIGH);//sends signal to relay to complete the circuit
+  else
+    digitalWrite(relaypin, LOW);//sends signal to relay to break the circuit
+}
