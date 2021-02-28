@@ -1,6 +1,6 @@
 int vibpin1 = 8; //declaring the channel for input from first vibration sensor
 int vibpin2 = 7; //declaring the channel for input from second vibration sensor
-int vibpin3 = 4; //declaring the channel for input from third vibration sensor
+int vibpin3 = 12; //declaring the channel for input from third vibration sensor
 int relaypin = 13;//setting the pin for
 
 void setup() {
