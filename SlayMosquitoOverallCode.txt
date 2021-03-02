@@ -1,0 +1,76 @@
+int vibpin1 = 12;
+int vibpin2 = 8;
+int vibpin3 = 7; //setting up channels for digital input signal from vibration sensors
+int relay1 = 0; //initialising value to store Positive (1) or negative (0) signal from all vibration sensors (using OR Logic)
+
+unsigned long prevmillis  = millis();
+long ontime = 10000;
+long offtime = 3000;
+
+#include "arduinoFFT.h" //library to perform fast fourier transform
+
+#define SAMPLES 64 //Number of frequency samples for FFT
+#define SAMPLING_FREQUENCY 2048 //Twice the maximum frequency to be detected
+#define freqpin A0 //setting up channel for analog input from sound detector module
+arduinoFFT FFT = arduinoFFT(); //perform
+
+unsigned int samplingPeriod; 
+unsigned long microSeconds;
+double frequency0;
+
+double vReal[SAMPLES];//creates vector of size samples to hold real values
+double vImag[SAMPLES];//creates vector of size samples to hold imaginary values
+
+int relay2 = 0;//initialising value to store positive (1) or negative (0) signal from frequency detector
+
+int relaypin = 13; //final output or instruction from  arduino to relay for completing or breaking the circuit
+
+void setup() {
+ pinMode(vibpin1, INPUT);
+ pinMode(vibpin2, INPUT);
+ pinMode(vibpin3, INPUT);//setting up reading of input from vibration sensors
+ pinMode(freqpin, INPUT);//setting up reading of input from sound sensor
+ samplingPeriod = round(1000000*(1.0/SAMPLING_FREQUENCY));//period in microseconds
+ pinMode(relaypin, OUTPUT);//setting up sending output to relay
+
+}
+
+void loop() {
+ unsigned long cmillis;
+ 
+ int val1; val1 = digitalRead(vibpin1);
+ int val2; val2 = digitalRead(vibpin2);
+ int val3; val3 = digitalRead(vibpin3);
+ if(val1 == 1||val2 == 1||val3 == 1)
+    {relay1 = 1;}
+ else
+    {relay1 = 0;}//reads overall signal from the three vibration sensors
+
+    
+ for(int i=0; i<SAMPLES; i++)
+ {microSeconds=micros();//Number of microseconds since the arduino board began running code
+ 
+ vReal[i]=analogRead(freqpin);//stores values of frequencies read
+ vImag[i]=0;
+
+ while(micros() < microSeconds + samplingPeriod)
+   {}}//reads analog input from sound detector for given sampling period
+
+ FFT.Windowing(vReal, SAMPLES, FFT_WIN_TYP_HAMMING, FFT_FORWARD);
+ FFT.Compute(vReal, vImag, SAMPLES, FFT_FORWARD);
+ FFT.ComplexToMagnitude(vReal, vImag, SAMPLES);//performs FFT on obtained samples
+
+ frequency0 = FFT.MajorPeak(vReal, SAMPLES, SAMPLING_FREQUENCY);//detects maximum frequency detected
+  
+ if(frequency0 <= 600 && frequency0 >= 400)
+    {relay2 = 1;}
+ else
+    {relay2 = 0;}//reads overall signal from sound sensor
+
+    cmillis = millis();//time since arduino started reading script
+
+ if ((relay1 == 1 || relay2 == 1)&&((millis() - cmillis) >= ontime))
+    {digitalWrite(relaypin, HIGH);}
+ else if ((millis() - cmillis) >= offtime)
+    {digitalWrite(relaypin, LOW);}//sends overall signsl to relay to open or break the circuit
+    }
