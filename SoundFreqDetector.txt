@@ -1,0 +1,26 @@
+#include <AudioFrequencyMeter.h>
+
+AudioFrequencyMeter meter;
+int ledpin = 13;
+
+void setup() {
+
+  // put your setup code here, to run once:
+  meter.setBandwidth(400.00, 600);    // Ignore frequency out of this range
+
+  meter.begin(A0, 45000);             // Intialize A0 at sample rate of 45kHz
+  pinMode(ledpin, OUTPUT);
+}
+
+void loop() {
+
+  // put your main code here, to run repeatedly:
+
+  float frequency = meter.getFrequency();
+
+  if (frequency > 0)
+
+  {
+     digitalWrite(ledpin, HIGH);
+      
+  }}
